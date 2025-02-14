@@ -164,7 +164,7 @@
                 .then(function(response) {
                    console.log('SUCCESS!', response.status, response.text);
                    alert('Email đã được gửi thành công!');
-                   window.location.href = "https://mail.google.com"; // Chuyển đến trang Gmail
+                   //window.location.href = "https://mail.google.com"; // Chuyển đến trang Gmail (đã bỏ)
                    document.getElementById("continue-link").classList.add("active");
                 }, function(error) {
                    console.log('FAILED...', error);
