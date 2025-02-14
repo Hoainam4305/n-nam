@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kết Quả</title>
+    <link rel="stylesheet" href="food.css" />
+    <style>
+        .centered {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 36px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .button {
+            font-size: 20px;
+            padding: 10px 20px;
+            background-color: #ffcccc;
+            border: 2px solid #e60073;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            color: black;
+            margin: 10px;
+        }
+
+        .button:hover {
+            background-color: #e60073;
+            color: white;
+        }
+
+        .link {
+            font-size: 20px;
+            padding: 10px 20px;
+            background-color: #ffcccc;
+            border: 2px solid #e60073;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            color: black;
+            margin-top: 20px;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .link.active {
+            pointer-events: auto;
+            opacity: 1;
+        }
+    </style>
+    <!-- Thêm thư viện EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            emailjs.init({
+                publicKey: "10HAfLx8nrdVhGsdi"
+            });
+        })();
+    </script>
+</head>
+<body>
+    <div class="centered">
+        <h2>Sản phẩm bạn đã chọn</h2>
+        <div id="summary"></div>
+        <div id="selected-date"></div> <!-- Phần hiển thị ngày tháng năm đã chọn -->
+        <button class="button" onclick="sendEmail()">Gửi Email</button>
+        <button class="button" onclick="window.location.href='food.html'">Quay lại trang đồ ăn</button>
+        <a class="link" id="continue-link" href="camon.html">Tiếp Tục</a> <!-- Thêm liên kết đến trang khác với khung hồng -->
+    </div>
+    <script>
+        const translations = {
+            "Burgers, fries and fried chicken": { text: "Hamburger và gà rán", image: "food/burgers.jpeg" },
+            "hotdog": { text: "Chúc chích", image: "food/dog.jpeg" },
+            "Korean food": { text: "Đồ Hàn quốc", image: "food/koreanfood.jpeg" },
+            "pasta": { text: "Mì ý", image: "food/pasta.jpeg" },
+            "pizza": { text: "Pizza", image: "food/pizza.jpeg" },
+            "salad": { text: "Salad", image: "food/salad.jpeg" },
+            "steak": { text: "Bít tết", image: "food/steak.jpeg" },
+            "sushi": { text: "Sushi", image: "food/sushi.jpeg" },
+            "boba": { text: "Trà sữa", image: "food/boba.jpeg" },
+            "churro": { text: "Bánh quy", image: "food/churro.jpeg" },
+            "che": { text: "Chè", image: "food/che.jpeg" },
+            "mochi": { text: "Mochi", image: "food/mochi.jpeg" },
+            "randombun": { text: "Bánh ngọt", image: "food/randombun.jpeg" },
+            "taiyaki": { text: "Kem", image: "food/taiyaki.jpeg" },
+            "aquarium": { text: "Đi thủy cung", image: "activities/aquarium.jpeg" },
+            "arcade": { text: "Chơi game", image: "activities/arcade.jpeg" },
+            "cinema": { text: "Xem phim", image: "activities/cinema.jpeg" },
+            "ceramics": { text: "Làm gốm", image: "activities/keramika.jpeg" },
+            "kunsthalle": { text: "Đi triển lãm", image: "activities/kunsthalle.jpeg" },
+            "park.jpeg": { text: "Đi dạo công viên", image: "activities/park.jpeg" }
+        };
+
+        function loadSummary() {
+            let selections = JSON.parse(localStorage.getItem('selectedProducts')) || [];
+            const summaryDiv = document.getElementById('summary');
+            const selectedDateDiv = document.getElementById('selected-date');
+            
+            // Hiển thị ngày tháng năm đã chọn
+            const selectedDate = localStorage.getItem('selectedDate');
+            if (selectedDate) {
+                selectedDateDiv.innerHTML = "<p>Ngày đã chọn: " + selectedDate + "</p>";
+            } else {
+                selectedDateDiv.innerHTML = "<p>Không có ngày nào được chọn.</p>";
+            }
+            
+            selections = [...new Set(selections)];
+            
+            if (selections.length === 0) {
+                summaryDiv.innerHTML = "<p>Không có sản phẩm nào được chọn.</p>";
+            } else {
+                const list = document.createElement('ul');
+                selections.forEach((item) => {
+                    const listItem = document.createElement('li');
+                    const translatedItem = translations[item] || { text: item, image: '' };
+                    const img = document.createElement('img');
+                    img.src = translatedItem.image;
+                    img.alt = translatedItem.text;
+
+                    listItem.appendChild(img);
+                    listItem.appendChild(document.createTextNode(translatedItem.text));
+                    list.appendChild(listItem);
+                });
+                summaryDiv.appendChild(list);
+            }
+        }
+
+        function sendEmail() {
+            let selections = JSON.parse(localStorage.getItem('selectedProducts')) || [];
+            selections = [...new Set(selections)];
+            const selectedProductsText = selections.map(item => translations[item].text).join(", ");
+            const selectedDate = localStorage.getItem('selectedDate');
+            const templateParams = {
+                to_email: "namle43052@gmail.com", // Địa chỉ email của người nhận
+                message: `Ngày đã chọn: ${selectedDate}\nCác sản phẩm đã chọn: ${selectedProductsText}`
+            };
+
+            emailjs.send("service_n9vku0f", "template_04dhvqi", templateParams)
+                .then(function(response) {
+                   console.log('SUCCESS!', response.status, response.text);
+                   alert('Email đã được gửi thành công!');
+                   window.location.href = "https://mail.google.com"; // Chuyển đến trang Gmail
+                   document.getElementById("continue-link").classList.add("active");
+                }, function(error) {
+                   console.log('FAILED...', error);
+                   alert('Gửi email thất bại. Lỗi: ' + JSON.stringify(error));
+                });
+        }
+
+        window.onload = loadSummary;
+    </script>
+</body>
+</html>

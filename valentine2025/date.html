@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chọn Ngày</title>
+    <link rel="stylesheet" href="date.css" />
+    <script>
+      function submitForm(event) {
+        event.preventDefault(); // Ngăn form gửi đi mặc định
+        var date = document.getElementById("date").value;
+        if (date) {
+          localStorage.setItem('selectedDate', date); // Lưu ngày tháng năm vào localStorage
+          window.location.href = "food.html"; // Chuyển hướng sang trang food
+        } else {
+          alert("Vui lòng chọn một ngày.");
+        }
+      }
+    </script>
+</head>
+<body>
+    <h1 title="choose a date">Em rảnh vào hôm nào ...</h1>
+    <form class="form-group" onsubmit="submitForm(event)">
+      <label for="date">Ngày nào: (chọn 1 ngày nhé)</label>
+      <div>
+        <input type="date" id="date" />
+        <button class="button" type="submit">
+          Tiếp
+        </button>
+      </div>
+    </form>
+</body>
+</html>
