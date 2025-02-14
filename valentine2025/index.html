@@ -1,32 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Valentine</title>
-    <link rel="stylesheet" href="valentine.css" />
-  </head>
-  <body>
-    <div id="valentineQuestion"><b>Em đi chơi Valentine với anh nhé?</b></div>
-    <button class="answerButton" onclick="location.href='thankyou.html'">
-      Có
-    </button>
-    <button class="answerButton" id="noButton">Không</button>
-    <br />
-    <img src="cat.gif" alt="cat asking question" class="responsive" />
-
+<head>
+    
+    <!-- Thẻ âm thanh -->
+    <audio id="background-music" src="ban doi.mp3" type="audio/mpeg" loop autoplay></audio>
+    
+    <!-- Iframes cho các trang khác -->
+    <iframe id="content-frame" src="index.html" style="width: 100%; height: 700px;"></iframe>
+    
+    <!-- Script để tải nội dung động -->
     <script>
-      document
-        .getElementById("noButton")
-        .addEventListener("click", function () {
-          var yesButton = document.querySelector(
-            'button[onclick*="thankyou.html"]'
-          );
-          var currentFontSize = parseInt(
-            window.getComputedStyle(yesButton).fontSize
-          );
-          yesButton.style.fontSize = currentFontSize + 10 + "px"; // Increase font size by 5px
-        });
+        function loadPage(page) {
+            document.getElementById('content-frame').src = page;
+        }
+
+        // Tự động phát nhạc khi trang tải
+        window.onload = function() {
+            document.getElementById('background-music').play();
+        };
     </script>
-  </body>
+</body>
 </html>
